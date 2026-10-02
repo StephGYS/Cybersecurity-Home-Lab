@@ -35,7 +35,7 @@ These actions generated authentication events that could be investigated from th
 
 From Kali Linux, I simulated unauthorized SSH login attempts against the Ubuntu-SIEM server using invalid usernames and incorrect passwords.
 
-![Failed SSH Attempts from Kali](kali-failed-invalid-ssh-attempts.png)
+![Failed SSH Attempts from Kali](kali%20failed-invalid%20ssh%20attempts.png)
 
 These attempts represent suspicious authentication activity that a security analyst could investigate through the target system's authentication logs.
 
@@ -51,7 +51,7 @@ sudo journalctl -u ssh --no-pager
 
 I filtered the logs to identify events such as:
 
-![Ubuntu journalctl showing failed password for invalid user](ubuntu-journalctl-failed-password-for-invalid-user.png)
+![Ubuntu journalctl showing failed password for invalid user](ubuntu%20journalctl%20failed%20password%20for%20invalid%20user.png)
 
 - `Invalid user`
 - `Failed password`
@@ -65,11 +65,11 @@ This allowed me to connect activity generated from Kali Linux with the correspon
 
 After analyzing failed authentication attempts, I performed a successful SSH login from Kali Linux to the Ubuntu-SIEM server using the authorized `siemadmin` account.
 
-![Successful SSH Login from Kali](kali-success-ssh.png)
+![Successful SSH Login from Kali](kali%20success%20ssh.png)
 
 On Ubuntu-SIEM, I verified the successful authentication event in the system logs. The `Accepted password` event confirmed that the `siemadmin` account successfully authenticated through SSH.
 
-![Ubuntu Log Showing Accepted Password](ubuntu-log-showing-accepted-password.png)
+![Ubuntu Log Showing Accepted Password](ubuntu%20log%20showing%20accepted%20password.png)
 
 This demonstrated the difference between failed authentication attempts and a successful login and showed how both activities can be correlated between the source system and the target's authentication logs.
 
