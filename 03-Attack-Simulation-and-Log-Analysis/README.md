@@ -31,6 +31,14 @@ The exercises included:
 
 These actions generated authentication events that could be investigated from the defensive side.
 
+### Failed SSH Authentication Attempts
+
+From Kali Linux, I simulated unauthorized SSH login attempts against the Ubuntu-SIEM server using invalid usernames and incorrect passwords.
+
+![Failed SSH Attempts from Kali](kali-failed-invalid-ssh-attempts.png)
+
+These attempts represent suspicious authentication activity that a security analyst could investigate through the target system's authentication logs.
+
 ## Linux Authentication Log Analysis
 
 On Ubuntu-SIEM, I investigated SSH authentication events using `journalctl`.
@@ -43,6 +51,8 @@ sudo journalctl -u ssh --no-pager
 
 I filtered the logs to identify events such as:
 
+![Ubuntu journalctl showing failed password for invalid user](ubuntu-journalctl-failed-password-for-invalid-user.png)
+
 - `Invalid user`
 - `Failed password`
 - `Accepted password`
@@ -50,6 +60,18 @@ I filtered the logs to identify events such as:
 - Session termination
 
 This allowed me to connect activity generated from Kali Linux with the corresponding authentication records on Ubuntu.
+
+### Successful SSH Authentication
+
+After analyzing failed authentication attempts, I performed a successful SSH login from Kali Linux to the Ubuntu-SIEM server using the authorized `siemadmin` account.
+
+![Successful SSH Login from Kali](kali-success-ssh.png)
+
+On Ubuntu-SIEM, I verified the successful authentication event in the system logs. The `Accepted password` event confirmed that the `siemadmin` account successfully authenticated through SSH.
+
+![Ubuntu Log Showing Accepted Password](ubuntu-log-showing-accepted-password.png)
+
+This demonstrated the difference between failed authentication attempts and a successful login and showed how both activities can be correlated between the source system and the target's authentication logs.
 
 ## Source IP Investigation
 
@@ -82,6 +104,17 @@ The logs showed activity involving:
 ```text
 siemadmin → root
 ```
+### Privilege Escalation Evidence
+
+The `siemadmin` account used `sudo -i` to obtain an interactive root shell.
+
+![Privilege Escalation from siemadmin to root](privilege-escalation-from-siemadmin-to-root.png)
+
+Reviewing the authentication logs showed the sudo activity and the opening of the privileged root session.
+
+![Logs Showing Sudo Root Session](logs-showing-sudo-root-session.png)
+
+This was important because a successful SSH login alone does not prove privilege escalation. Correlating the SSH authentication with the subsequent sudo activity showed the progression from remote access as `siemadmin` to elevated access as `root`.
 
 This demonstrated an important security concept: a successful login does not necessarily represent the end of an investigation.
 
@@ -94,19 +127,17 @@ Instead of analyzing individual log entries in isolation, I practiced connecting
 A possible sequence was:
 
 ```text
-SSH authentication attempts
+Failed SSH attempts
         ↓
-Failed authentication
+Accepted password for siemadmin
         ↓
-Successful authentication
+SSH session opened
         ↓
-Session opened
+sudo -i
         ↓
-sudo execution
+siemadmin → root
         ↓
-Privilege escalation
-        ↓
-Root session
+Root session opened
 ```
 
 Correlating these events provides more context than examining a single authentication event.
