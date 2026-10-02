@@ -18,7 +18,7 @@ The virtual machines communicate through an isolated lab network.
 
 Basic architecture:
 
-![Cybersecurity Home Lab Network Architecture](../home-lab-network-diagram.png.png)
+![Cybersecurity Home Lab Network Architecture](home-lab-network-diagram.png.png)
 
 pfSense acts as the gateway between the virtual systems and allows me to practice network segmentation, routing, firewall concepts, and traffic monitoring.
 
