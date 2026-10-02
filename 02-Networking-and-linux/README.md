@@ -162,6 +162,7 @@ This confirmed that the systems could communicate successfully across the isolat
 
 ### Host Discovery
 ![Kali Nmap Host Discovery](kali-nmap-discovery.png)
+
 I performed host discovery on the lab subnet using:
 
 `sudo nmap -sn 10.0.5.0/24`
