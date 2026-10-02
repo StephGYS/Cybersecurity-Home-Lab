@@ -22,6 +22,20 @@ This helped me understand how multiple systems communicate within the same subne
 
 I practiced using Linux commands to inspect and troubleshoot network configuration.
 
+### Kali Linux Network Configuration
+
+I verified the Kali Linux network configuration using `ip addr` and `ip route`.
+
+![Kali Linux Network Configuration](kali-network-configuration.png)
+
+The Kali workstation received an IP address on the `10.0.5.0/24` SecurityLab network and used pfSense at `10.0.5.1` as its default gateway.
+
+### Ubuntu Network Configuration
+
+I also verified the Ubuntu-SIEM server's IP address and routing configuration.
+
+![Ubuntu IP and Routing Configuration](ubuntu-ip-routing.png)
+
 ### IP Address and Interfaces
 
 ```bash
@@ -41,6 +55,7 @@ I used `ip route` to examine the routing table and identify the default gateway.
 In my SecurityLab, pfSense at `10.0.5.1` functions as the gateway.
 
 ### Connectivity Testing
+![Kali Connectivity Testing](kali-connectivity-testing.png)
 
 ```bash
 ping 10.0.5.1
@@ -129,6 +144,7 @@ Kali Linux received the following configuration through DHCP:
 I used `ip addr` to identify the network interface and IP address and `ip route` to verify the routing table and default gateway.
 
 ### Connectivity Testing
+![Kali Connectivity Testing](kali-connectivity-testing.png)
 
 I tested communication from Kali Linux to the pfSense gateway:
 
@@ -145,7 +161,7 @@ Result: 4 packets transmitted, 4 received, 0% packet loss.
 This confirmed that the systems could communicate successfully across the isolated `10.0.5.0/24` lab network.
 
 ### Host Discovery
-
+![Kali Nmap Host Discovery](kali-nmap-discovery.png)
 I performed host discovery on the lab subnet using:
 
 `sudo nmap -sn 10.0.5.0/24`
@@ -153,6 +169,7 @@ I performed host discovery on the lab subnet using:
 The scan identified four active hosts on the lab network, including the pfSense gateway, Ubuntu-SIEM, Kali Linux, and another active virtual system.
 
 ### Service Enumeration
+![Kali Service Enumeration](kali-service-enumeration.png)
 
 I scanned the Ubuntu-SIEM server for exposed TCP services using:
 
