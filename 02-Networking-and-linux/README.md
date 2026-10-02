@@ -112,3 +112,69 @@ During this phase, I developed a better understanding of:
 This phase taught me that before investigating suspicious network activity, I first need to understand what normal communication looks like.
 
 Understanding hosts, IP addresses, routes, ports, protocols, and services created the foundation for the attack simulation, log analysis, detection, and SIEM monitoring performed in later phases.
+
+## 🔎 Network Verification and Host Discovery
+
+After configuring the lab network, I verified connectivity and performed basic network reconnaissance from Kali Linux.
+
+### Kali Network Configuration
+
+Kali Linux received the following configuration through DHCP:
+
+- IP address: `10.0.5.11/24`
+- Network: `10.0.5.0/24`
+- Default gateway: `10.0.5.1`
+- Interface: `eth0`
+
+I used `ip addr` to identify the network interface and IP address and `ip route` to verify the routing table and default gateway.
+
+### Connectivity Testing
+
+I tested communication from Kali Linux to the pfSense gateway:
+
+`ping -c 4 10.0.5.1`
+
+Result: 4 packets transmitted, 4 received, 0% packet loss.
+
+I also tested communication between Kali Linux and Ubuntu-SIEM:
+
+`ping -c 4 10.0.5.10`
+
+Result: 4 packets transmitted, 4 received, 0% packet loss.
+
+This confirmed that the systems could communicate successfully across the isolated `10.0.5.0/24` lab network.
+
+### Host Discovery
+
+I performed host discovery on the lab subnet using:
+
+`sudo nmap -sn 10.0.5.0/24`
+
+The scan identified four active hosts on the lab network, including the pfSense gateway, Ubuntu-SIEM, Kali Linux, and another active virtual system.
+
+### Service Enumeration
+
+I scanned the Ubuntu-SIEM server for exposed TCP services using:
+
+`sudo nmap -sV 10.0.5.10`
+
+The scan identified:
+
+- Port `22/tcp` — OPEN
+- Service — SSH
+- Software — OpenSSH
+
+This demonstrated how network reconnaissance can be used to identify reachable systems, exposed ports, and running services.
+
+## 🧠 What I Learned
+
+Through this exercise, I practiced:
+
+- Identifying IPv4 addresses and network interfaces
+- Reading Linux routing tables
+- Understanding the role of a default gateway
+- Testing connectivity with ICMP
+- Understanding `/24` subnets
+- Discovering active hosts with Nmap
+- Identifying open ports and services
+- Understanding the relationship between networking and security reconnaissance
