@@ -108,11 +108,11 @@ siemadmin → root
 
 The `siemadmin` account used `sudo -i` to obtain an interactive root shell.
 
-![Privilege Escalation from siemadmin to root](privilege-escalation-from-siemadmin-to-root.png)
+![Privilege Escalation from siemadmin to root](privilege%20escalation%20from%20siemadmin%20to%20root.png)
 
 Reviewing the authentication logs showed the sudo activity and the opening of the privileged root session.
 
-![Logs Showing Sudo Root Session](logs-showing-sudo-root-session.png)
+![Logs Showing Sudo Root Session](logs%20showing%20sudo%20root%20session.png)
 
 This was important because a successful SSH login alone does not prove privilege escalation. Correlating the SSH authentication with the subsequent sudo activity showed the progression from remote access as `siemadmin` to elevated access as `root`.
 
