@@ -12,9 +12,9 @@ My SecurityLab network uses:
 
 - **Network:** `10.0.5.0/24`
 - **Gateway:** `10.0.5.1` — pfSense
-- **Ubuntu-SIEM:** `10.0.5.11`
+- **Ubuntu-SIEM:** `10.0.5.10`
 - **Wazuh Server:** `10.0.5.14`
-- **Kali Linux:** `10.0.5.228`
+- **Kali Linux:** `10.0.5.11`
 
 This helped me understand how multiple systems communicate within the same subnet and how pfSense functions as the network gateway.
 
