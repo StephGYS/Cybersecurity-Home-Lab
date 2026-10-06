@@ -41,13 +41,27 @@ than authentication logs alone can provide.
 
 ## Audit Event Investigation
 
-### Wazuh Audit Event Analysis
+I used `ausearch` on Ubuntu-SIEM to investigate events recorded by Auditd.
 
-After configuring Auditd, I used Wazuh to investigate the audit events collected from the Ubuntu-SIEM endpoint.
+One event contained information such as:
 
-Wazuh parsed the Linux Audit logs and presented the events as structured security data. This allowed me to examine individual fields instead of relying only on raw log entries.
+```text
+exe=/usr/sbin/ausearch
+uid=0
+auid=1000
+key=command_execution
 
-One command execution event contained information such as:
+
+Then **after that**, create:
+
+```markdown
+## Wazuh Audit Event Analysis
+
+After investigating the events locally, I used Wazuh to analyze the Auditd events collected from the Ubuntu-SIEM endpoint.
+
+Wazuh converted the raw Linux Audit events into structured security fields, making the activity easier to investigate.
+
+One command execution event showed:
 
 ```text
 Agent: ubuntu-siem
@@ -59,13 +73,3 @@ AUID: 1000
 Audit Key: command_execution
 Success: yes
 Decoder: auditd
-
-I used audit search tools to investigate recorded events.
-
-One of the events contained information such as:
-
-```text
-exe=/usr/sbin/ausearch
-uid=0
-auid=1000
-key=command_execution
