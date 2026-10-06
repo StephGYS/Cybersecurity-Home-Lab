@@ -162,6 +162,25 @@ In this event, the `AUID` remained `1000`, while the effective user and group ID
 
 This indicates that activity originating from the authenticated user session was executing with root-level privileges.
 
+## Event Correlation
+
+After analyzing individual Auditd and Wazuh events, I correlated the activity to reconstruct the sequence of events.
+
+The investigation showed the following progression:
+
+1. The `siemadmin` user authenticated to the Ubuntu-SIEM system.
+2. Activity was initially executed under the normal user context (UID 1000).
+3. The user used `sudo` to obtain elevated privileges.
+4. A root-level session was established.
+5. Subsequent processes executed with an effective UID (EUID) of `0`.
+6. Auditd recorded the activity and Wazuh collected and analyzed the events.
+
+This demonstrated how multiple security events can be correlated to reconstruct user activity and identify privilege escalation.
+
+Rather than analyzing each alert independently, event correlation provided the context needed to understand the complete sequence of activity:
+
+`User Login → Normal Activity → Privilege Escalation → Root Activity → Auditd → Wazuh Detection`
+
 The event demonstrates why analysts should examine multiple identity fields instead of looking only at the username or command. Linux Audit can preserve information about the original authenticated session while also showing the privileges used by a process.
 
 This information can help an analyst reconstruct activity involving privilege escalation and determine what a user did after obtaining elevated access.
