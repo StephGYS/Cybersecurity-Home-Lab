@@ -34,7 +34,7 @@ be investigated through the Linux audit logs.
 
 I verified that the `auditd` service was active and running on Ubuntu-SIEM.
 
-![Auditd service active](auditd-service-active.png)
+![Auditd service active](auditd-service-activee.png)
 
 The purpose of using auditd was to gain more visibility into system activity
 than authentication logs alone can provide.
