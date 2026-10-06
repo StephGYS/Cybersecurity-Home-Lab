@@ -181,6 +181,28 @@ Rather than analyzing each alert independently, event correlation provided the c
 
 `User Login → Normal Activity → Privilege Escalation → Root Activity → Auditd → Wazuh Detection`
 
+## Phase 4 Conclusion
+
+This phase helped me move from simply reading Linux logs to understanding how security monitoring tools collect, structure, and correlate system activity.
+
+By combining Linux Auditd with Wazuh, I practiced identifying:
+
+- Command execution
+- User and session attribution
+- Normal versus elevated execution
+- Root-level activity
+- Privilege escalation indicators
+- Wazuh detection rules and alert severity
+- Event correlation across multiple security events
+
+One of the most important lessons from this phase was that an alert does not automatically mean an incident.
+
+The analyst must examine the command, user context, privileges, source, timeline, and surrounding events before determining whether activity is normal or suspicious.
+
+This phase strengthened my understanding of the security monitoring workflow:
+
+`System Activity → Auditd → Log Collection → Wazuh → Detection → Investigation → Event Correlation → Analyst Conclusion`
+
 The event demonstrates why analysts should examine multiple identity fields instead of looking only at the username or command. Linux Audit can preserve information about the original authenticated session while also showing the privileges used by a process.
 
 This information can help an analyst reconstruct activity involving privilege escalation and determine what a user did after obtaining elevated access.
