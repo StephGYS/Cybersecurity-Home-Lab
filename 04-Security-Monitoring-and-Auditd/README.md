@@ -41,6 +41,25 @@ than authentication logs alone can provide.
 
 ## Audit Event Investigation
 
+### Wazuh Audit Event Analysis
+
+After configuring Auditd, I used Wazuh to investigate the audit events collected from the Ubuntu-SIEM endpoint.
+
+Wazuh parsed the Linux Audit logs and presented the events as structured security data. This allowed me to examine individual fields instead of relying only on raw log entries.
+
+One command execution event contained information such as:
+
+```text
+Agent: ubuntu-siem
+Agent IP: 10.0.5.10
+Executable: /usr/bin/sed
+Command: sed
+UID: 1000
+AUID: 1000
+Audit Key: command_execution
+Success: yes
+Decoder: auditd
+
 I used audit search tools to investigate recorded events.
 
 One of the events contained information such as:
