@@ -51,10 +51,6 @@ uid=0
 auid=1000
 key=command_execution
 
-
-Then **after that**, create:
-
-```markdown
 ## Wazuh Audit Event Analysis
 
 After investigating the events locally, I used Wazuh to analyze the Auditd events collected from the Ubuntu-SIEM endpoint.
