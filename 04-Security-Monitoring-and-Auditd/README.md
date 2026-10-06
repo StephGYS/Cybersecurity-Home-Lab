@@ -50,6 +50,7 @@ exe=/usr/sbin/ausearch
 uid=0
 auid=1000
 key=command_execution
+```
 
 ## Wazuh Audit Event Analysis
 
@@ -69,3 +70,4 @@ AUID: 1000
 Audit Key: command_execution
 Success: yes
 Decoder: auditd
+```
