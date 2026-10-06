@@ -138,9 +138,7 @@ This exercise demonstrated that a Wazuh alert does not automatically indicate ma
 
 I also investigated an Auditd event involving a process executing with elevated privileges.
 
-![document-detail-after-root](document-detail-after-root-1.png)
-
-![document-detail-after-root](document-detail-after-root-2.png)
+![document-detail-after-root](document-detail-after-root-1.png)  ![document-detail-after-root](document-detail-after-root-2.png)
 
 Important fields included:
 
