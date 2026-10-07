@@ -183,7 +183,7 @@ Rather than analyzing each alert independently, event correlation provided the c
 
 ## Phase 4 Conclusion
 
-This phase helped me move from simply reading Linux logs to understanding how security monitoring tools collect, structure, and correlate system activity.
+This phase helped me move from simply reading Linux logs to understanding how security monitoring tools collect, structure, correlate, and investigate system activity.
 
 By combining Linux Auditd with Wazuh, I practiced identifying:
 
@@ -194,15 +194,16 @@ By combining Linux Auditd with Wazuh, I practiced identifying:
 - Privilege escalation indicators
 - Wazuh detection rules and alert severity
 - Event correlation across multiple security events
+- Basic incident containment
 
 One of the most important lessons from this phase was that an alert does not automatically mean an incident.
 
-The analyst must examine the command, user context, privileges, source, timeline, and surrounding events before determining whether activity is normal or suspicious.
+I learned to examine the command, user context, privileges, source IP, timeline, and surrounding events before determining whether activity is normal or suspicious.
 
-This phase strengthened my understanding of the security monitoring workflow:
+After identifying suspicious activity involving repeated authentication failures, successful access, and privilege escalation, I also considered the next incident-response step: containment.
 
-`System Activity → Auditd → Log Collection → Wazuh → Detection → Investigation → Event Correlation → Analyst Conclusion`
+The goal of containment is to limit the attacker's ability to continue operating while preserving evidence for further investigation. Depending on the situation, this could include restricting the suspicious source IP, terminating unauthorized sessions, disabling a compromised account, or isolating the affected endpoint from the network.
 
-The event demonstrates why analysts should examine multiple identity fields instead of looking only at the username or command. Linux Audit can preserve information about the original authenticated session while also showing the privileges used by a process.
+This phase strengthened my understanding of the security monitoring and incident-response workflow:
 
-This information can help an analyst reconstruct activity involving privilege escalation and determine what a user did after obtaining elevated access.
+`System Activity → Auditd → Log Collection → Wazuh → Detection → Investigation → Event Correlation → Analyst Conclusion → Containment`
