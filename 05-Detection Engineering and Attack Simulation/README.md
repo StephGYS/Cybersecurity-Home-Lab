@@ -28,11 +28,9 @@ I selected a frequency value of:
 freq=3
 ```
 
-![Auditd Configuration](images/auditd-configuration.png)
-
-**Figure 2:** Auditd configuration used during Phase 5.
 
 After modifying the configuration, I verified that Auditd remained active before continuing with the attack simulation.
+(View figure 3)
 
 ---
 
