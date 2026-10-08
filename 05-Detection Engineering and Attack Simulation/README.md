@@ -390,7 +390,7 @@ This configuration allowed me to restrict SSH access from Kali while maintaining
 
 **Screenshot 9 – UFW Firewall Rules**
 
-![UFW Firewall Rules](ufw-status-numbered.png)
+![UFW Firewall Rules](ufw-status-numbered.PNG)
 
 *Figure 9: UFW active with a rule denying SSH connections from Kali Linux.*
 
