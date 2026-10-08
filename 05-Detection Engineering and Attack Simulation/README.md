@@ -111,9 +111,6 @@ During the investigation, I focused on:
 - Examining security event details
 - Understanding how Wazuh presents and correlates security information
 
-**Screenshot 5 – Wazuh Threat Hunting**
-
-[Insert screenshot of Wazuh Threat Hunting showing the investigated events]
 ![investigated even](IP-address-and-username-in-the-investigated-even-4.jpg)
 
 *Figure 5: Reviewing security events in Wazuh Threat Hunting.*
@@ -139,10 +136,6 @@ The following information was identified:
 | SIEM | Wazuh |
 
 The source IP address helped identify the system associated with the investigated activity, while the username helped determine which account was involved.
-
-**Screenshot 6 – Wazuh Event Details**
-
-[Insert screenshot showing the IP address and username in the investigated event]
 
 ![investigated even](IP-address-and-username-in-the-investigated-even-0.jpg)
 ![investigated even](IP-address-and-username-in-the-investigated-even.jpg)
@@ -177,10 +170,6 @@ This command allows an authorized user to start a root login shell.
 During the investigation, I confirmed that I personally executed this command as part of my lab testing.
 
 The purpose of analyzing this event was to understand how privilege escalation activity could appear in security logs and why analysts must verify whether the activity was authorized.
-
-**Screenshot 7 – Privilege Escalation Investigation**
-
-[Insert screenshot showing the sudo activity or related Wazuh/Auditd event]
 
 ![sudo activity or related Wazuh/Auditd event](sudo-to-root.jpg)
 ![sudo activity or related Wazuh/Auditd event](sudo-to-root-1.jpg)
