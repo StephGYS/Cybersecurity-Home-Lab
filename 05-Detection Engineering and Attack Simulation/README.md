@@ -388,8 +388,6 @@ The specific deny rule was positioned before the general SSH allow rule.
 
 This configuration allowed me to restrict SSH access from Kali while maintaining SSH access for other permitted sources.
 
-**Screenshot 9 – UFW Firewall Rules**
-
 ![UFW Firewall Rules](ufw-status-numbered.PNG)
 
 *Figure 9: UFW active with a rule denying SSH connections from Kali Linux.*
@@ -405,8 +403,6 @@ ssh -o ConnectTimeout=10 siemadmin@10.0.5.10
 The connection timed out.
 
 This indicated that Kali could no longer establish an SSH connection to the Ubuntu server.
-
-**Screenshot 10 – SSH Connection Timeout**
 
 ![SSH Connection Timeout](ssh-timeout.png)
 
@@ -447,8 +443,7 @@ The repeated TCP SYN packets demonstrated that Kali attempted to initiate an SSH
 However, the SSH connection was not established.
 
 **Screenshot 11 – TCP Packet Capture**
-![kali ssh connection](kali-ssh-connection-timeout-unsuccessful.png)
-![TCP Packet Capture](tcpdump-ssh.png)
+![kali ssh connection](kali-ssh-connection-timeout-unsuccessful.png) ![TCP Packet Capture](tcpdump-ssh.png)
 
 *Figure 11: tcpdump capturing repeated TCP SYN packets from Kali to Ubuntu SSH port 22.*
 
