@@ -312,7 +312,9 @@ Although the combination of authentication failures and privilege escalation may
 
 The next stage will focus on containment techniques, validating their effectiveness, and documenting the outcome.
 
+## 12. Incident Containment
 
+To be Continued
 
 
 
