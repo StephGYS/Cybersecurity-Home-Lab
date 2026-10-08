@@ -113,7 +113,7 @@ During the investigation, I focused on:
 
 ![investigated even](IP-address-and-username-in-the-investigated-even-4.jpg)
 
-*Figure 5: Reviewing security events in Wazuh Threat Hunting.*
+**Figure 5:** Investigation wazuh-generated authentication alerts through the server's alert logs.
 
 ### What I Learned
 
@@ -147,11 +147,21 @@ The source IP address helped identify the system associated with the investigate
 
 *Figure 6: Identifying the source IP address and user account during the investigation.*
 
+### Successful SSH Authentication Analysis
+
+During the investigation, I also identified successful SSH authentication events involving the `siemadmin` account.
+
+Using Ubuntu authentication logs, I examined the source IP address, account name, and authentication outcome.
+
+This helped me understand how an analyst can distinguish failed authentication attempts from successful access and investigate whether successful authentication is associated with earlier suspicious activity.
+
 ### Security Analysis
 
 Identifying an IP address or username is not sufficient to determine whether activity is malicious.
 
 Additional information, including authentication outcomes, timestamps, and subsequent user activity, is necessary to understand the event.
+
+
 
 ---
 
@@ -205,6 +215,15 @@ The investigation included the following event categories:
 4. Review of authentication activity.
 5. Investigation of privilege escalation.
 6. Verification of whether the observed activity was authorized.
+
+### Custom SSH Brute-Force Detection Rule
+
+I examined a custom Wazuh detection rule designed to identify repeated SSH authentication failures. The rule uses event correlation to detect multiple failed login attempts within a defined time window.
+
+During testing, I reviewed alerts associated with rule ID `100110`, which identified a potential SSH brute-force attack.
+
+This helped me understand how SIEM detection rules transform individual authentication events into actionable security alerts.
+
 
 ### Detection and Investigation Workflow
 
@@ -280,7 +299,6 @@ At this stage, I had completed the initial investigation of the simulated SSH ac
 - Investigated privilege escalation involving `sudo -i`.
 - Confirmed that the privilege escalation was performed intentionally during lab testing.
 - Practiced distinguishing potentially suspicious activity from known authorized actions.
-
 
 ### Analyst Conclusion
 
