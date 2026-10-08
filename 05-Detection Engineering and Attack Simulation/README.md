@@ -93,9 +93,156 @@ The investigation focuses on identifying patterns such as:
 - Frequency of authentication attempts
 - Successful authentication following multiple failures
 
+---  
+
+## 7. Investigating SSH Events in Wazuh SIEM
+
+After generating multiple failed SSH authentication attempts and verifying the corresponding events in Ubuntu logs, I continued the investigation using Wazuh SIEM.
+
+The objective was to determine whether the suspicious authentication activity was visible in Wazuh and identify relevant information for further investigation.
+
+I accessed the Wazuh dashboard and used the Threat Hunting interface to investigate events associated with the monitored Ubuntu server.
+
+During the investigation, I focused on:
+
+- Identifying the source IP address
+- Reviewing authentication failures
+- Identifying the account involved
+- Examining security event details
+- Understanding how Wazuh presents and correlates security information
+
+**Screenshot 5 – Wazuh Threat Hunting**
+
+[Insert screenshot of Wazuh Threat Hunting showing the investigated events]
+
+*Figure 5: Reviewing security events in Wazuh Threat Hunting.*
+
+### What I Learned
+
+Wazuh provides centralized visibility into security activity. Instead of relying exclusively on terminal commands, a security analyst can use the SIEM interface to search, filter, and investigate events.
+
 ---
 
-## Detection Logic
+## 8. Identifying the Source IP and User Account
+
+During the investigation, I examined the information associated with the suspicious authentication activity.
+
+The following information was identified:
+
+| Field | Finding |
+|---|---|
+| Source IP | 10.0.5.11 |
+| User account | siemadmin |
+| Monitored system | Ubuntu Server |
+| Service | SSH |
+| SIEM | Wazuh |
+
+The source IP address helped identify the system associated with the investigated activity, while the username helped determine which account was involved.
+
+**Screenshot 6 – Wazuh Event Details**
+
+[Insert screenshot showing the IP address and username in the investigated event]
+
+![investigated even](IP-address-and-username-in-the-investigated-even-0.png)
+![investigated even](IP-address-and-username-in-the-investigated-even.png)
+
+![investigated even](IP-address-and-username-in-the-investigated-even-1.png)
+![investigated even](IP-address-and-username-in-the-investigated-even-2.png)
+
+![investigated even](IP-address-and-username-in-the-investigated-even-3.png)
+![investigated even](IP-address-and-username-in-the-investigated-even-4.png)
+
+*Figure 6: Identifying the source IP address and user account during the investigation.*
+
+### Security Analysis
+
+Identifying an IP address or username is not sufficient to determine whether activity is malicious.
+
+Additional information, including authentication outcomes, timestamps, and subsequent user activity, is necessary to understand the event.
+
+---
+
+## 9. Investigating Privilege Escalation
+
+As part of the investigation, I examined activity involving elevated privileges on the Ubuntu server.
+
+The command involved was:
+
+```bash
+sudo -i
+```
+
+This command allows an authorized user to start a root login shell.
+
+During the investigation, I confirmed that I personally executed this command as part of my lab testing.
+
+The purpose of analyzing this event was to understand how privilege escalation activity could appear in security logs and why analysts must verify whether the activity was authorized.
+
+**Screenshot 7 – Privilege Escalation Investigation**
+
+[Insert screenshot showing the sudo activity or related Wazuh/Auditd event]
+
+![sudo activity or related Wazuh/Auditd event](sudo-to-root.png)
+![sudo activity or related Wazuh/Auditd event](sudo-to-root-1.png)
+![sudo activity or related Wazuh/Auditd event](sudo-to-root-2.png)
+![sudo activity or related Wazuh/Auditd event](sudo-to-root-3.png)
+
+
+*Figure 7: Investigating privilege escalation activity on the Ubuntu server.*
+
+### Security Analysis
+
+Privilege escalation is an important activity to monitor because an attacker who obtains elevated permissions may gain greater control over a compromised system.
+
+However, legitimate administrators also use elevated privileges to perform authorized tasks.
+
+In this case, I knew that the `sudo -i` command was executed intentionally by me.
+
+![investigate root shell](investigate-root-shell.png)
+
+Therefore, the event was not evidence of unauthorized privilege escalation.
+
+---
+
+## 10. Correlating Authentication and Privilege Escalation Events
+
+After investigating the authentication and privilege escalation activity, I considered how these events could be related during a security investigation.
+
+The investigation included the following event categories:
+
+1. Repeated failed SSH authentication attempts.
+2. Identification of the source IP address.
+3. Identification of the user account.
+4. Review of authentication activity.
+5. Investigation of privilege escalation.
+6. Verification of whether the observed activity was authorized.
+
+### Detection and Investigation Workflow
+
+```text
+Repeated Failed SSH Attempts
+              |
+              v
+     Review Ubuntu Logs
+              |
+              v
+   Investigate Wazuh Events
+              |
+              v
+     Identify Source IP
+              |
+              v
+     Identify User Account
+              |
+              v
+   Review Privilege Escalation
+              |
+              v
+      Verify Authorization
+              |
+              v
+       Analyst Conclusion
+```
 
 The basic detection concept for this activity is:
 
@@ -117,6 +264,52 @@ This demonstrates an important detection-engineering concept:
 
 ---
 
+### What I Learned
+
+A security alert should be treated as a starting point for an investigation rather than immediate proof of compromise.
+
+For example, repeated failed logins followed by successful authentication and privilege escalation could indicate an attacker gaining access to a system.
+
+However, analysts must verify whether those events are actually connected and whether the actions were authorized.
+
+This demonstrates the importance of event correlation, investigation, and contextual analysis in a Security Operations Center.
+
+---
+
+
+## 11. Investigation Findings – Before Containment
+
+At this stage, I had completed the initial investigation of the simulated SSH activity.
+
+### Key Findings
+
+- Generated multiple failed SSH authentication attempts from Kali Linux.
+- Verified authentication events in Ubuntu logs.
+- Used Wazuh to investigate security-related activity.
+- Identified source IP address `10.0.5.11` during the investigation.
+- Identified the account `siemadmin`.
+- Investigated privilege escalation involving `sudo -i`.
+- Confirmed that the privilege escalation was performed intentionally during lab testing.
+- Practiced distinguishing potentially suspicious activity from known authorized actions.
+
+
+### Analyst Conclusion
+
+The simulated SSH password-guessing activity demonstrated how repeated authentication failures can create indicators of a potential brute-force attack.
+
+The investigation also demonstrated why analysts should not classify every privileged action as malicious.
+
+Although the combination of authentication failures and privilege escalation may warrant investigation, the observed events must be evaluated using supporting evidence and knowledge of authorized activity.
+
+**Containment has not yet been performed.**
+
+The next stage will focus on containment techniques, validating their effectiveness, and documenting the outcome.
+
+
+
+
+
+
 ## Skills Practiced
 
 During Phase 5 so far, I practiced:
@@ -132,8 +325,3 @@ During Phase 5 so far, I practiced:
 - Brute-force attack identification
 - Detection engineering fundamentals
 
-## Current Status
-
-So far, I have successfully prepared the monitoring environment, verified Auditd operation, configured auditing, and generated suspicious SSH authentication activity.
-
-The next part of Phase 5 will focus on analyzing these events in **Wazuh**, identifying alerts, and determining how repeated authentication failures can be detected and correlated as potential brute-force activity.
