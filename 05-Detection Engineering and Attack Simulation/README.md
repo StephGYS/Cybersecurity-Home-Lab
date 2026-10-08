@@ -390,7 +390,7 @@ This configuration allowed me to restrict SSH access from Kali while maintaining
 
 ![UFW Firewall Rules](ufw-status-numbered.PNG)
 
-*Figure 9: UFW active with a rule denying SSH connections from Kali Linux.*
+*Figure 8: UFW active with a rule denying SSH connections from Kali Linux.*
 
 ### 12.3 Testing SSH Connectivity After Containment
 
@@ -406,7 +406,7 @@ This indicated that Kali could no longer establish an SSH connection to the Ubun
 
 ![SSH Connection Timeout](ssh-timeout.png)
 
-*Figure 10: SSH connection from Kali timing out after the firewall restriction was applied.*
+*Figure 9: SSH connection from Kali timing out after the firewall restriction was applied.*
 
 ### 12.4 Capturing Network Traffic Using tcpdump
 
@@ -442,10 +442,9 @@ The repeated TCP SYN packets demonstrated that Kali attempted to initiate an SSH
 
 However, the SSH connection was not established.
 
-**Screenshot 11 – TCP Packet Capture**
 ![kali ssh connection](kali-ssh-connection-timeout-unsuccessful.png) ![TCP Packet Capture](tcpdump-ssh.png)
 
-*Figure 11: tcpdump capturing repeated TCP SYN packets from Kali to Ubuntu SSH port 22.*
+*Figure 10: tcpdump capturing repeated TCP SYN packets from Kali to Ubuntu SSH port 22.*
 
 ### Security Analysis
 
@@ -497,7 +496,7 @@ This investigation successfully revealed firewall entries confirming that UFW wa
 
 ![UFW Block Logs](ufw-block-logs.png)
 
-*Figure 12: Firewall log entries confirming blocked SSH traffic from Kali Linux.*
+*Figure 11: Firewall log entries confirming blocked SSH traffic from Kali Linux.*
 
 ### 12.6 Analyzing the Firewall Events
 
