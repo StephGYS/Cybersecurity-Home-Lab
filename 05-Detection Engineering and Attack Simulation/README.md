@@ -312,12 +312,6 @@ Although the combination of authentication failures and privilege escalation may
 
 The next stage will focus on containment techniques, validating their effectiveness, and documenting the outcome.
 
-## 12. Incident Containment
-
-To be Continued
-
-
-
 
 ## Skills Practiced
 
@@ -333,4 +327,247 @@ During Phase 5 so far, I practiced:
 - Event correlation
 - Brute-force attack identification
 - Detection engineering fundamentals
+
+
+
+## 12. Incident Containment – Blocking the Simulated Attacker
+
+### Objective
+
+After investigating the simulated SSH password-guessing activity, I moved to the containment stage of incident response.
+
+The objective was to block SSH connections from the simulated attacker, verify that the firewall rule was effective, and collect evidence confirming that the unwanted traffic was being dropped.
+
+I used Ubuntu's Uncomplicated Firewall (UFW), SSH connection testing, TCP packet capture, and firewall log analysis.
+
+### 12.1 Identifying the Attacker's Source IP
+
+Before verifying containment, I confirmed which source IP Kali Linux used to communicate with the Ubuntu server.
+
+The route information showed:
+
+```text
+10.0.5.10 dev eth0 src 10.0.5.11 uid 1000
+```
+
+This confirmed:
+
+- Source IP: `10.0.5.11` (Kali Linux)
+- Destination IP: `10.0.5.10` (Ubuntu Server)
+- Network interface: `eth0`
+
+Verifying the source IP was important because the firewall rule needed to target the correct machine.
+
+### 12.2 Configuring and Verifying UFW
+
+I used UFW to restrict incoming SSH traffic from the simulated attacker.
+
+I verified the firewall configuration using:
+
+```bash
+sudo ufw status verbose
+```
+
+The firewall reported:
+
+```text
+Status: active
+Logging: on (low)
+Default: deny (incoming)
+```
+
+The rules included:
+
+```text
+22/tcp       DENY IN    10.0.5.11
+22/tcp       ALLOW IN   Anywhere
+22/tcp (v6)  ALLOW IN   Anywhere (v6)
+```
+
+The specific deny rule was positioned before the general SSH allow rule.
+
+This configuration allowed me to restrict SSH access from Kali while maintaining SSH access for other permitted sources.
+
+**Screenshot 9 – UFW Firewall Rules**
+
+![UFW Firewall Rules](ufw-status-numbered.png)
+
+*Figure 9: UFW active with a rule denying SSH connections from Kali Linux.*
+
+### 12.3 Testing SSH Connectivity After Containment
+
+To determine whether the containment rule was effective, I attempted to establish an SSH connection from Kali to Ubuntu.
+
+```bash
+ssh -o ConnectTimeout=10 siemadmin@10.0.5.10
+```
+
+The connection timed out.
+
+This indicated that Kali could no longer establish an SSH connection to the Ubuntu server.
+
+**Screenshot 10 – SSH Connection Timeout**
+
+![SSH Connection Timeout](images/ssh-timeout.png)
+
+*Figure 10: SSH connection from Kali timing out after the firewall restriction was applied.*
+
+### 12.4 Capturing Network Traffic Using tcpdump
+
+To investigate whether the SSH packets were reaching Ubuntu, I used tcpdump to capture network traffic.
+
+On Ubuntu, I executed:
+
+```bash
+sudo tcpdump -ni any 'src host 10.0.5.11 and dst host 10.0.5.10 and tcp dst port 22'
+```
+
+While tcpdump was running, I generated another SSH connection attempt from Kali.
+
+```bash
+ssh -o ConnectTimeout=10 siemadmin@10.0.5.10
+```
+
+The packet capture displayed traffic similar to:
+
+```text
+IP 10.0.5.11.31956 > 10.0.5.10.22: Flags [S]
+```
+
+The capture summary showed:
+
+```text
+5 packets captured
+5 packets received by filter
+0 packets dropped by kernel
+```
+
+The repeated TCP SYN packets demonstrated that Kali attempted to initiate an SSH connection and that Ubuntu received the connection attempts.
+
+However, the SSH connection was not established.
+
+**Screenshot 11 – TCP Packet Capture**
+![kali ssh connection](kali-ssh-connection-timeout-unsuccessful.png)
+![TCP Packet Capture](images/tcpdump-ssh.png)
+
+*Figure 11: tcpdump capturing repeated TCP SYN packets from Kali to Ubuntu SSH port 22.*
+
+### Security Analysis
+
+The packet capture confirmed that the SSH traffic reached Ubuntu.
+
+The connection timeout demonstrated that the TCP connection was not successfully established.
+
+Although this supported the containment findings, packet capture alone did not prove that UFW was responsible for dropping the traffic.
+
+Additional firewall log evidence was required.
+
+### 12.5 Investigating UFW Firewall Logs
+
+After confirming that the SSH connection was unsuccessful, I investigated the Ubuntu firewall logs to identify explicit blocking events.
+
+Initially, the following command returned no matching results:
+
+```bash
+sudo journalctl -k --since "30 minutes ago" --no-pager | grep 'UFW BLOCK' | grep 'SRC=10.0.5.11'
+```
+
+To improve event visibility, I increased the UFW logging level:
+
+```bash
+sudo ufw logging medium
+```
+
+I then generated another SSH connection attempt from Kali:
+
+```bash
+ssh -o ConnectTimeout=5 siemadmin@10.0.5.10
+```
+
+Afterward, I checked the firewall logs again:
+
+```bash
+sudo journalctl -k --since "5 minutes ago" --no-pager | grep 'UFW BLOCK'
+```
+
+I also used the UFW log file to review blocking events:
+
+```bash
+sudo grep 'UFW BLOCK' /var/log/ufw.log | tail -10
+```
+
+This investigation successfully revealed firewall entries confirming that UFW was blocking the simulated attacker's SSH packets.
+
+**Screenshot 12 – UFW Block Logs**
+
+![UFW Block Logs](images/ufw-block-logs.png)
+
+*Figure 12: Firewall log entries confirming blocked SSH traffic from Kali Linux.*
+
+### 12.6 Analyzing the Firewall Events
+
+The recorded firewall events contained the following information:
+
+```text
+[UFW BLOCK]
+SRC=10.0.5.11
+DST=10.0.5.10
+PROTO=TCP
+DPT=22
+```
+
+| Field | Explanation |
+|---|---|
+| UFW BLOCK | Firewall blocked the packet |
+| SRC=10.0.5.11 | Kali Linux source address |
+| DST=10.0.5.10 | Ubuntu destination address |
+| PROTO=TCP | TCP network protocol |
+| DPT=22 | SSH destination port |
+
+These logs provided direct evidence that UFW was blocking incoming SSH traffic originating from the simulated attacker.
+
+### 12.7 Containment Verification Results
+
+The containment exercise produced the following results:
+
+| Verification | Result |
+|---|---|
+| Kali source IP identified | Confirmed |
+| UFW firewall active | Confirmed |
+| SSH deny rule for Kali | Confirmed |
+| SSH connection from Kali | Timed out |
+| TCP SYN packets reached Ubuntu | Confirmed |
+| UFW BLOCK events recorded | Confirmed |
+
+### Analyst Conclusion
+
+The containment exercise successfully demonstrated how to restrict suspicious SSH activity using a host-based firewall.
+
+The active UFW deny rule, unsuccessful SSH connection attempts, TCP packet captures, and explicit firewall block logs provided consistent evidence that SSH traffic from Kali Linux was being blocked.
+
+This exercise also demonstrated why multiple forms of evidence are important during incident response.
+
+A firewall configuration alone does not prove that containment is effective. Connection testing and log verification provide stronger confirmation that the intended security control is working.
+
+### Skills Practiced
+
+- Incident containment
+- UFW firewall configuration and verification
+- Source IP validation
+- SSH connectivity testing
+- TCP packet capture using tcpdump
+- TCP SYN packet analysis
+- Linux firewall logging
+- Firewall event investigation
+- Security control validation
+- Evidence-based incident response
+
+
+
+
+
+
+
+
+
 
