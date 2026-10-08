@@ -143,14 +143,14 @@ The source IP address helped identify the system associated with the investigate
 
 [Insert screenshot showing the IP address and username in the investigated event]
 
-![investigated even](IP-address-and-username-in-the-investigated-even-0.png)
-![investigated even](IP-address-and-username-in-the-investigated-even.png)
+![investigated even](IP-address-and-username-in-the-investigated-even-0.jpg)
+![investigated even](IP-address-and-username-in-the-investigated-even.jpg)
 
-![investigated even](IP-address-and-username-in-the-investigated-even-1.png)
-![investigated even](IP-address-and-username-in-the-investigated-even-2.png)
+![investigated even](IP-address-and-username-in-the-investigated-even-1.jpg)
+![investigated even](IP-address-and-username-in-the-investigated-even-2.jpg)
 
-![investigated even](IP-address-and-username-in-the-investigated-even-3.png)
-![investigated even](IP-address-and-username-in-the-investigated-even-4.png)
+![investigated even](IP-address-and-username-in-the-investigated-even-3.jpg)
+![investigated even](IP-address-and-username-in-the-investigated-even-4.jpg)
 
 *Figure 6: Identifying the source IP address and user account during the investigation.*
 
