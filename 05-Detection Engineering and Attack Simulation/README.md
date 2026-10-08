@@ -114,6 +114,7 @@ During the investigation, I focused on:
 **Screenshot 5 – Wazuh Threat Hunting**
 
 [Insert screenshot of Wazuh Threat Hunting showing the investigated events]
+![investigated even](IP-address-and-username-in-the-investigated-even-4.jpg)
 
 *Figure 5: Reviewing security events in Wazuh Threat Hunting.*
 
@@ -150,7 +151,6 @@ The source IP address helped identify the system associated with the investigate
 ![investigated even](IP-address-and-username-in-the-investigated-even-2.jpg)
 
 ![investigated even](IP-address-and-username-in-the-investigated-even-3.jpg)
-![investigated even](IP-address-and-username-in-the-investigated-even-4.jpg)
 
 *Figure 6: Identifying the source IP address and user account during the investigation.*
 
@@ -182,10 +182,10 @@ The purpose of analyzing this event was to understand how privilege escalation a
 
 [Insert screenshot showing the sudo activity or related Wazuh/Auditd event]
 
-![sudo activity or related Wazuh/Auditd event](sudo-to-root.png)
-![sudo activity or related Wazuh/Auditd event](sudo-to-root-1.png)
-![sudo activity or related Wazuh/Auditd event](sudo-to-root-2.png)
-![sudo activity or related Wazuh/Auditd event](sudo-to-root-3.png)
+![sudo activity or related Wazuh/Auditd event](sudo-to-root.jpg)
+![sudo activity or related Wazuh/Auditd event](sudo-to-root-1.jpg)
+![sudo activity or related Wazuh/Auditd event](sudo-to-root-2.jpg)
+![sudo activity or related Wazuh/Auditd event](sudo-to-root-3.jpg)
 
 
 *Figure 7: Investigating privilege escalation activity on the Ubuntu server.*
@@ -198,7 +198,7 @@ However, legitimate administrators also use elevated privileges to perform autho
 
 In this case, I knew that the `sudo -i` command was executed intentionally by me.
 
-![investigate root shell](investigate-root-shell.png)
+![investigate root shell](investigate-root-shell.jpg)
 
 Therefore, the event was not evidence of unauthorized privilege escalation.
 
