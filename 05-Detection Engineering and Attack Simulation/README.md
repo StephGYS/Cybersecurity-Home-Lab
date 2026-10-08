@@ -1,4 +1,4 @@
-# Phase 5 – Detection Engineering and Attack Simulation
+# Phase 5 – Detection Engineering and incident Response
 
 ## Objective
 
