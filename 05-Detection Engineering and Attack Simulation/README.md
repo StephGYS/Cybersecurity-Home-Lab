@@ -556,6 +556,396 @@ A firewall configuration alone does not prove that containment is effective. Con
 - Security control validation
 - Evidence-based incident response
 
+### 12.7 Verifying Firewall Containment Using Packet Counters
+
+After configuring UFW to block SSH connections from the simulated attacker, I performed additional verification to confirm that the firewall was actually dropping traffic.
+
+Initially, I reviewed UFW block logs, but some entries showed traffic originating from `10.0.5.14` rather than the Kali Linux IP address `10.0.5.11`.
+
+This distinction was important because firewall logs showing blocked traffic from another source do not prove that the intended attacker was contained.
+
+I therefore investigated the firewall rule directly using packet counters.
+
+**Command executed on Ubuntu:**
+
+```bash
+sudo iptables -L ufw-user-input -n -v --line-numbers
+```
+
+The initial output showed a DROP rule configured for SSH traffic from `10.0.5.11`, followed by a general ACCEPT rule for SSH traffic.
+
+However, the DROP rule initially showed zero matching packets.
+
+To test the firewall, I generated another SSH connection attempt from Kali:
+
+```bash
+ssh -o ConnectTimeout=5 siemadmin@10.0.5.10
+```
+
+I then checked the firewall packet counters again.
+
+**Verified results:**
+
+| Field | Result |
+|---|---|
+| Firewall action | DROP |
+| Source IP | 10.0.5.11 |
+| Destination port | TCP 22 (SSH) |
+| Initial packet counter | 0 |
+| Final packet counter | 55 |
+| Final byte counter | 3,300 |
+
+The DROP rule counter increased from zero to **55 packets and 3,300 bytes**.
+
+This provided direct evidence that traffic from the simulated attacker matched the firewall's blocking rule.
+
+**Screenshot – UFW Packet Counter Verification**
+
+[Insert screenshot showing the DROP rule with 55 packets and 3,300 bytes]
+
+*Figure: Firewall packet counters confirming that SSH traffic from Kali Linux matched the DROP rule.*
+
+**Security Analysis:**
+
+This exercise demonstrated the difference between configuring a security control and verifying that the control actually works.
+
+The increased packet counter confirmed that the firewall was processing matching traffic from Kali and applying the DROP action.
+
+---
+
+### 12.8 Verifying SSH Authentication Logs After Containment
+
+After confirming the firewall was dropping Kali's traffic, I investigated whether new SSH authentication events appeared on Ubuntu.
+
+**Command executed:**
+
+```bash
+sudo journalctl -u ssh --since "5 minutes ago" --no-pager
+```
+
+**Result:**
+
+```text
+-- No entries --
+```
+
+No SSH journal entries were returned for the five-minute period examined.
+
+**Security Analysis:**
+
+The absence of SSH authentication events was consistent with the firewall blocking connection attempts before SSH authentication could occur.
+
+However, an empty journal result alone does not prove that no traffic reached the SSH service. It must be interpreted alongside the firewall counters, packet capture, and connection test.
+
+The combined evidence supported the conclusion that Kali's new SSH connection attempts were successfully blocked.
+
+**Screenshot – SSH Journal Verification**
+
+[Insert screenshot showing the journalctl command and its output]
+
+*Figure: Reviewing SSH authentication logs after implementing firewall containment.*
+
+---
+
+### 12.9 Verifying Security Monitoring After Containment
+
+After implementing and verifying network containment, I checked whether the security monitoring services remained operational.
+
+The objective was to ensure that blocking the simulated attacker had not interrupted endpoint monitoring or system audit logging.
+
+**Command 1 – Verify Wazuh Agent**
+
+```bash
+sudo systemctl status wazuh-agent --no-pager
+```
+
+**Result:** Active (running)
+
+**Command 2 – Verify Auditd**
+
+```bash
+sudo systemctl status auditd --no-pager
+```
+
+**Result:** Active (running)
+
+Both services remained operational after containment.
+
+| Security component | Verified status |
+|---|---|
+| UFW firewall | Active |
+| Kali SSH blocking rule | DROP |
+| Firewall packet counter | 55 packets |
+| Firewall byte counter | 3,300 bytes |
+| Recent SSH journal | No entries in checked period |
+| Wazuh agent | Active (running) |
+| Auditd | Active (running) |
+
+**Screenshot – Wazuh and Auditd Service Verification**
+
+[Insert screenshot showing both services active]
+
+*Figure: Confirming that security monitoring and audit logging remained operational following containment.*
+
+---
+
+### 12.10 Final Containment Verification and Analyst Conclusion
+
+The containment investigation produced multiple forms of evidence demonstrating that SSH traffic from the simulated attacker was successfully blocked.
+
+**Evidence collected:**
+
+1. A UFW DROP rule targeting Kali Linux (`10.0.5.11`) on TCP port 22.
+2. SSH connection attempts from Kali resulting in connection timeouts.
+3. Firewall packet counters increasing from zero to 55 matching packets.
+4. A total of 3,300 bytes recorded by the DROP rule.
+5. No new SSH journal entries during the checked five-minute period.
+6. Wazuh and Auditd remaining active after containment.
+
+The investigation also reinforced the importance of validating the source IP address when interpreting firewall logs. Earlier blocked traffic from `10.0.5.14` could not be used as evidence of containment for Kali (`10.0.5.11`).
+
+**Final Analyst Conclusion:**
+
+The simulated attacker's new SSH connection attempts were successfully contained through UFW firewall controls.
+
+The firewall packet counters provided direct evidence that Kali's traffic matched the DROP rule, while the SSH journal investigation and monitoring-service checks provided additional supporting evidence.
+
+This exercise strengthened my practical understanding of:
+
+- Network containment and firewall rule verification.
+- Interpreting firewall packet counters.
+- Correlating network controls with authentication logs.
+- Validating source and destination IP addresses.
+- Maintaining security visibility after containment.
+
+**Containment status: Verified successful.**
+
+Further investigation of active sessions and persistence mechanisms is documented in Sections 13–15.
+
+
+
+
+
+
+
+huygoioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioi
+
+## 13. Investigating Active SSH Sessions
+
+After blocking new SSH connections from Kali, I investigated whether any existing SSH sessions remained active.
+
+This step was important because blocking new connections does not necessarily terminate previously established sessions.
+
+### Commands Executed
+
+```bash
+who
+w
+sudo ss -tnp | grep ':22'
+```
+
+### Investigation Findings
+
+The `w` command identified my legitimate local session:
+
+```text
+siemadmin  tty2
+```
+
+The SSH connection check returned no output, indicating that no TCP connections involving port 22 were displayed at the time of inspection.
+
+An additional service check confirmed that SSH was still listening on port 22.
+
+### Analyst Conclusion
+
+No active SSH connections were identified during the investigation.
+
+The SSH service remained available for permitted connections, while the UFW firewall continued blocking SSH attempts from Kali.
+
+This demonstrated the difference between blocking new connections and verifying whether existing sessions remain active.
+
+---
+
+## 14. Investigating Persistence Mechanisms
+
+Following containment and active-session verification, I began investigating whether the simulated attack had left behind any unauthorized access mechanisms.
+
+The investigation focused on SSH keys, user accounts, administrative privileges, and scheduled tasks.
+
+### 14.1 SSH Authorized Keys Investigation
+
+I inspected the SSH configuration directory for the `siemadmin` account.
+
+```bash
+sudo ls -la /home/siemadmin/.ssh/
+sudo cat /home/siemadmin/.ssh/authorized_keys
+```
+
+The directory contained a `known_hosts` file, but no `authorized_keys` file was identified.
+
+**Finding:** No evidence of unauthorized SSH keys was discovered in the inspected account directory.
+
+### 14.2 User Account and Administrative Privilege Investigation
+
+I checked regular user accounts:
+
+```bash
+awk -F: '$3 >= 1000 && $3 < 65534 {print $1, $3, $6, $7}' /etc/passwd
+```
+
+The result identified:
+
+```text
+siemadmin 1000 /home/siemadmin /bin/bash
+```
+
+I also reviewed sudo group membership:
+
+```bash
+getent group sudo
+```
+
+The result showed:
+
+```text
+sudo:x:27:siemadmin
+```
+
+**Finding:** No unexpected regular-user accounts or sudo-group members were identified in these checks.
+
+### 14.3 Scheduled Task Investigation
+
+I examined scheduled tasks that could potentially be used to maintain unauthorized access.
+
+Commands executed:
+
+```bash
+sudo crontab -l
+crontab -l
+sudo ls -la /etc/cron.d /etc/cron.daily /etc/cron.hourly
+```
+
+Both the root and `siemadmin` accounts had no personal crontab entries.
+
+The inspected system cron directories contained recognizable Ubuntu maintenance components, including `anacron`, `apt-compat`, `dpkg`, `logrotate`, and `man-db`.
+
+**Finding:** No obvious malicious scheduled tasks were identified in the inspected locations.
+
+### Investigation Conclusion
+
+The persistence investigation found no evidence of unauthorized SSH keys, unexpected regular-user accounts, unexpected sudo-group membership, or obviously malicious cron jobs in the locations examined.
+
+However, these checks do not eliminate the possibility of persistence through other mechanisms.
+
+Additional investigation of systemd services and other startup mechanisms is necessary before reaching a broader conclusion.
+
+---
+## 15. Investigating Systemd Services for Persistence
+
+### Objective
+
+After investigating SSH authorized keys, user accounts, administrative privileges, and scheduled tasks, I continued examining potential persistence mechanisms on the Ubuntu server.
+
+The objective was to identify suspicious systemd services that could allow an attacker to maintain access or automatically execute malicious programs after a system restart.
+
+### 15.1 Identifying Running Services
+
+I executed the following command to list currently running services:
+
+```bash
+systemctl list-units --type=service --state=running --no-pager
+```
+
+The results included several legitimate system services:
+
+- `auditd.service` – Records security audit events.
+- `cron.service` – Manages scheduled tasks.
+- `systemd-journald.service` – Collects system logs.
+- `wazuh-agent.service` – Collects security telemetry for Wazuh.
+
+The Wazuh agent was confirmed active and running.
+
+Although SSH had previously been used during the attack simulation, `ssh.service` was not visible in the displayed running-service list. Therefore, its status required separate verification.
+
+**Screenshot 16 – Running Systemd Services**
+
+[Insert screenshot showing the running services]
+
+*Figure 16: Reviewing running systemd services on Ubuntu to identify potentially suspicious processes.*
+
+### 15.2 Investigating Enabled Services
+
+I examined services configured to start automatically:
+
+```bash
+systemctl list-unit-files --type=service --state=enabled --no-pager
+```
+
+This helped identify services configured for automatic startup, which can be important when investigating persistence.
+
+No obviously unfamiliar services were identified during the initial review.
+
+**Screenshot 17 – Enabled Systemd Services**
+
+[Insert screenshot showing enabled services]
+
+*Figure 17: Reviewing enabled systemd services for potential persistence mechanisms.*
+
+### 15.3 Investigating Recently Modified Service Files
+
+I also inspected service files under `/etc/systemd/system`:
+
+```bash
+sudo find /etc/systemd/system -type f -name '*.service' -printf '%TY-%Tm-%Td %TH:%TM %p\n' | sort -r | head -20
+```
+
+The search identified two service files associated with Snap components.
+
+Neither appeared obviously malicious based on its filename.
+
+However, identifying a familiar service name does not automatically confirm that the service is safe.
+
+Additional verification may include reviewing the service configuration, executable path, and associated processes.
+
+**Screenshot 18 – Systemd Service File Investigation**
+
+[Insert screenshot showing the service file search results]
+
+*Figure 18: Inspecting service files to identify potentially suspicious persistence mechanisms.*
+
+### 15.4 Security Analysis
+
+An attacker who obtains root privileges may create or modify a systemd service to execute malicious commands automatically.
+
+For example, a malicious service could be configured to restart after a system reboot, allowing an attacker to maintain access.
+
+This technique is known as **persistence**.
+
+During my investigation, I reviewed running services, enabled services, and service files to identify potentially unauthorized activity.
+
+### Investigation Findings
+
+| Investigation | Result |
+|---|---|
+| Wazuh agent | Active and running |
+| Auditd service | Observed running |
+| Cron service | Observed running |
+| Systemd journal | Observed running |
+| SSH service | Requires separate status verification |
+| Unfamiliar running services | None identified |
+| Suspicious enabled services | None obvious |
+| Service files reviewed | Two Snap-related service files |
+| Confirmed malicious persistence | None identified |
+
+### Analyst Conclusion
+
+The initial systemd investigation did not reveal any obviously malicious services or unauthorized persistence mechanisms.
+
+However, the absence of suspicious services in the reviewed output does not completely rule out persistence.
+
+This exercise helped me understand how attackers may abuse systemd services to maintain access and why service configuration, startup behavior, and executable paths are important during incident response.
+
+**Status: Initial systemd persistence investigation completed.**
 
 
 
