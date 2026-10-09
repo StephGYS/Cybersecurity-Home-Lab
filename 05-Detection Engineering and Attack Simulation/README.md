@@ -599,9 +599,7 @@ The DROP rule counter increased from zero to **55 packets and 3,300 bytes**.
 
 This provided direct evidence that traffic from the simulated attacker matched the firewall's blocking rule.
 
-**Screenshot – UFW Packet Counter Verification**
-
-[Insert screenshot showing the DROP rule with 55 packets and 3,300 bytes]
+![Insert screenshot showing the DROP rule with 55 packets and 3,300 bytes]](f-a.png)
 
 *Figure: Firewall packet counters confirming that SSH traffic from Kali Linux matched the DROP rule.*
 
@@ -639,12 +637,6 @@ However, an empty journal result alone does not prove that no traffic reached th
 
 The combined evidence supported the conclusion that Kali's new SSH connection attempts were successfully blocked.
 
-**Screenshot – SSH Journal Verification**
-
-[Insert screenshot showing the journalctl command and its output]
-
-*Figure: Reviewing SSH authentication logs after implementing firewall containment.*
-
 ---
 
 ### 12.9 Verifying Security Monitoring After Containment
@@ -681,9 +673,7 @@ Both services remained operational after containment.
 | Wazuh agent | Active (running) |
 | Auditd | Active (running) |
 
-**Screenshot – Wazuh and Auditd Service Verification**
-
-[Insert screenshot showing both services active]
+![Insert screenshot showing both services active](g.png)
 
 *Figure: Confirming that security monitoring and audit logging remained operational following containment.*
 
@@ -722,13 +712,6 @@ This exercise strengthened my practical understanding of:
 
 Further investigation of active sessions and persistence mechanisms is documented in Sections 13–15.
 
-
-
-
-
-
-
-huygoioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioioi
 
 ## 13. Investigating Active SSH Sessions
 
@@ -867,9 +850,7 @@ The Wazuh agent was confirmed active and running.
 
 Although SSH had previously been used during the attack simulation, `ssh.service` was not visible in the displayed running-service list. Therefore, its status required separate verification.
 
-**Screenshot 16 – Running Systemd Services**
-
-[Insert screenshot showing the running services]
+![Insert screenshot showing the running services](c.png)
 
 *Figure 16: Reviewing running systemd services on Ubuntu to identify potentially suspicious processes.*
 
@@ -885,11 +866,7 @@ This helped identify services configured for automatic startup, which can be imp
 
 No obviously unfamiliar services were identified during the initial review.
 
-**Screenshot 17 – Enabled Systemd Services**
-
-[Insert screenshot showing enabled services]
-
-*Figure 17: Reviewing enabled systemd services for potential persistence mechanisms.*
+**See Figure 17 – Enabled Systemd Services for potential persistence mechanisms.**
 
 ### 15.3 Investigating Recently Modified Service Files
 
@@ -907,11 +884,9 @@ However, identifying a familiar service name does not automatically confirm that
 
 Additional verification may include reviewing the service configuration, executable path, and associated processes.
 
-**Screenshot 18 – Systemd Service File Investigation**
+![Insert screenshot showing the service file search results](d.png)
 
-[Insert screenshot showing the service file search results]
-
-*Figure 18: Inspecting service files to identify potentially suspicious persistence mechanisms.*
+*Figure 17: Inspecting service files to identify potentially suspicious persistence mechanisms.*
 
 ### 15.4 Security Analysis
 
