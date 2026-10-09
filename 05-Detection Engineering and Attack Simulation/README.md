@@ -923,6 +923,105 @@ This exercise helped me understand how attackers may abuse systemd services to m
 **Status: Initial systemd persistence investigation completed.**
 
 
+---
+
+## 16. Phase 5 – Final Conclusion and Lessons Learned
+
+### Project Overview
+
+In Phase 5 of my cybersecurity home lab, I expanded my practical experience in security detection, threat investigation, and incident response using Kali Linux, Ubuntu, Wazuh SIEM, Auditd, and UFW.
+
+The objective was to simulate suspicious SSH authentication activity, investigate the resulting security events, correlate evidence from multiple sources, and implement containment measures against the simulated attacker.
+
+### Key Accomplishments
+
+**1. Attack Simulation and Detection**
+
+- Generated repeated SSH authentication attempts from Kali Linux (`10.0.5.11`) against Ubuntu (`10.0.5.10`).
+- Investigated failed and successful authentication events using Linux system logs.
+- Used Wazuh SIEM and custom detection logic to analyze suspicious authentication activity.
+- Examined privilege escalation activity involving `sudo -i` and correlated relevant security events.
+
+**2. Security Investigation and Event Correlation**
+
+- Identified source IP addresses, user accounts, authentication outcomes, and relevant event timestamps.
+- Investigated SSH authentication logs and system activity.
+- Practiced distinguishing potentially suspicious behavior from authorized lab activity.
+- Learned the importance of correlating multiple events before determining whether an incident represents unauthorized access.
+
+**3. Incident Containment**
+
+- Configured UFW to block SSH traffic from the simulated attacker.
+- Verified the containment rule through SSH connection tests, packet captures, and firewall inspection.
+- Confirmed that the firewall DROP rule matched **55 packets totaling 3,300 bytes**.
+- Reviewed UFW and SSH logs to support the containment findings.
+
+**4. Post-Containment Verification**
+
+- Checked logged-in users and active SSH connections.
+- Confirmed that no established SSH connections were displayed during verification.
+- Verified that Wazuh Agent and Auditd remained active after containment.
+
+**5. Persistence Investigation**
+
+- Inspected SSH authorized keys for potential unauthorized access.
+- Reviewed user accounts and sudo-group membership.
+- Investigated root, user, and system cron jobs.
+- Examined running and enabled systemd services and relevant service files.
+- Found no obvious evidence of unauthorized persistence in the locations inspected.
+
+### Tools and Technologies Used
+
+| Tool | Purpose |
+|---|---|
+| Kali Linux | Simulated attacker |
+| Ubuntu Linux | Target server and monitored endpoint |
+| Wazuh SIEM | Security event monitoring and detection |
+| Auditd | System auditing and command execution visibility |
+| SSH | Remote authentication testing |
+| UFW / iptables | Network containment and firewall verification |
+| tcpdump | Network packet capture |
+| journalctl | Authentication and system log investigation |
+| systemctl | Service monitoring and persistence investigation |
+
+### Key Lessons Learned
+
+This phase reinforced several important cybersecurity principles:
+
+1. **Detection requires context.** Multiple related security events can indicate suspicious activity, but successful authentication or privilege escalation does not automatically prove malicious intent.
+
+2. **Containment must be verified.** Configuring a firewall rule is not sufficient. Packet counters, connection tests, and logs provide stronger evidence that the security control is functioning.
+
+3. **Source IP validation matters.** Firewall events must be associated with the correct source address before they can support an investigation.
+
+4. **Blocking access does not guarantee eradication.** Security analysts must investigate existing sessions, unauthorized accounts, scheduled tasks, and other persistence mechanisms.
+
+5. **Security monitoring should remain operational.** Wazuh and Auditd were verified as active following containment.
+
+6. **Evidence-based reporting is essential.** Investigation findings should distinguish confirmed observations from assumptions and areas requiring further verification.
+
+### Final Assessment
+
+The simulated attacker's new SSH connection attempts were successfully contained using UFW, with supporting evidence from firewall packet counters, connection tests, and system logs.
+
+Post-containment checks did not identify active SSH connections or obvious unauthorized persistence mechanisms in the inspected locations.
+
+However, these findings do not constitute a comprehensive forensic examination or prove that every possible persistence mechanism has been eliminated.
+
+The privilege escalation activity observed during this exercise was intentionally performed as part of the authorized lab simulation.
+
+### Phase 5 Status
+
+**Completed – Detection, Investigation, Containment, and Initial Persistence Verification**
+
+Phase 5 provided practical experience with several responsibilities commonly performed by Security Operations Center (SOC) analysts, including threat detection, log analysis, incident investigation, containment validation, and security documentation.
+
+This phase strengthened my ability to investigate security events systematically and support conclusions with technical evidence.
+
+**Next Phase: Phase 6 – Advanced Security Monitoring and Incident Response**
+
+The next phase will build on these skills through more advanced detection, alert investigation, and incident response exercises.
+
 
 
 
