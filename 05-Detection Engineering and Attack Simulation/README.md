@@ -358,6 +358,13 @@ This confirmed:
 
 Verifying the source IP was important because the firewall rule needed to target the correct machine.
 
+As a reminder, the Command to block Kali On your Ubuntu VM was likely:
+
+```bash
+sudo ufw deny from 10.0.5.11 to any port 22 proto tcp
+```
+This blocks SSH connections originating from Kali's IP address.
+
 ### 12.2 Configuring and Verifying UFW
 
 I used UFW to restrict incoming SSH traffic from the simulated attacker.
