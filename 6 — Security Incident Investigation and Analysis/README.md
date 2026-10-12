@@ -277,7 +277,8 @@ This evidence supported the reconstruction of the incident timeline and the asse
 
 ### Evidence 6 — Auditd Investigation
 
-![Auditd Investigation](06-auditd-investigation.png)
+![Auditd Investigation](06-auditd-investigation-on-wazuh.png)
+![Auditd Investigation](06-auditd-investigation-on-ubuntu.png)
 
 **Description:**
 
