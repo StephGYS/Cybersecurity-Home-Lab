@@ -226,7 +226,7 @@ The following screenshots document the investigation and provide supporting evid
 
 ### Evidence 1 — Failed SSH Authentication
 
-![Failed SSH Authentication](screenshots/01-failed-ssh.png)
+![Failed SSH Authentication](01-failed-ssh.png)
 
 **Description:**
 
@@ -236,7 +236,7 @@ The screenshot demonstrates the identification of unsuccessful login attempts th
 
 ### Evidence 2 — Authentication Event Details
 
-![Authentication Details](screenshots/02-auth-details.png)
+![Authentication Details](02-auth-details.png)
 
 **Description:**
 
@@ -246,7 +246,7 @@ This information helped establish the origin and nature of the activity.
 
 ### Evidence 3 — Successful SSH Authentication
 
-![Successful SSH Authentication](screenshots/03-successful-ssh.png)
+![Successful SSH Authentication](03-successful-ssh.png)
 
 **Description:**
 
@@ -256,7 +256,7 @@ This evidence confirmed a successful SSH login but did not, by itself, establish
 
 ### Evidence 4 — Privileged Sudo Activity
 
-![Sudo Activity](screenshots/04-sudo-activity.png)
+![Sudo Activity](04-sudo-activity.png)
 
 **Description:**
 
@@ -266,7 +266,7 @@ The observed administrative commands demonstrated privileged activity, but unaut
 
 ### Evidence 5 — Incident Timeline
 
-![Incident Timeline](screenshots/05-incident-timeline.png)
+![Incident Timeline](05-incident-timeline.png)
 
 **Description:**
 
@@ -276,7 +276,7 @@ This evidence supported the reconstruction of the incident timeline and the asse
 
 ### Evidence 6 — Auditd Investigation
 
-![Auditd Investigation](screenshots/06-auditd-investigation.png)
+![Auditd Investigation](06-auditd-investigation.png)
 
 **Description:**
 
