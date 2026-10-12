@@ -227,6 +227,7 @@ The following screenshots document the investigation and provide supporting evid
 ### Evidence 1 — Failed SSH Authentication
 
 ![Failed SSH Authentication](01-failed-ssh.png)
+![Failed SSH Authentication](02-failed-ssh.png)
 
 **Description:**
 
