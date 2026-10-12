@@ -237,7 +237,7 @@ The screenshot demonstrates the identification of unsuccessful login attempts th
 
 ### Evidence 2 — Authentication Event Details
 
-![Authentication Details](02-auth-details.png)
+![Authentication Details](03-successful-ssh-0.png)
 
 **Description:**
 
